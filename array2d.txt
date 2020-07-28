@@ -1,0 +1,306 @@
+-- FreeFem++ v4.6 (Thu Apr  2 15:47:38 CEST 2020 - git v4.6)
+ Load: lg_fem lg_mesh lg_mesh3 eigenvalue 
+    1 : //  array2d.edp
+    2 : //
+    3 : //  Discussion:
+    4 : //
+    5 : //    Demonstrate how 2D matrices can be defined and manipulated.
+    6 : //
+    7 : //  Location:
+    8 : //
+    9 : //    http://people.sc.fsu.edu/~jburkardt/freefem++/array2d/array2d.edp
+   10 : //
+   11 : //  Modified:
+   12 : //
+   13 : //    02 July 2015
+   14 : //
+   15 : //  Author:
+   16 : //
+   17 : //    John Burkardt
+   18 : //
+   19 : load "lapack" Add lapack interface ...
+   20 : 
+   21 : cout << "\n";
+   22 : cout << "ARRAY2D:\n";
+   23 : cout << "  Demonstrate how 2D matrices can be defined and 
+  ... : manipulated.\n";
+   24 : //
+   25 : //  Define a 3x3 matrix A 
+   26 : //
+   27 : //  [ 0 1 0 ]
+   28 : //  [ 0 0 1 ]
+   29 : //  [ 1 1 1 ]
+   30 : //
+   31 : real[int,int] A(3,3);
+   32 : 
+   33 : A = 1.0; 
+   34 : A(0,0) = 0.0;
+   35 : A(0,2) = 0.0;
+   36 : A(1,0) = 0.0;
+   37 : A(1,1) = 0.0;
+   38 : cout << "\n";
+   39 : cout << "  Matrix A = " << A << endl;
+   40 : //
+   41 : //  Define a 3x3 matrix B:
+   42 : //
+   43 : //  [ 3 1 1 ]
+   44 : //  [ 1 1 3 ]
+   45 : //  [ 3 3 3 ]
+   46 : //
+   47 : real[int,int] B(3,3);
+   48 : //B = 3.0; 
+   49 : //B(0,1) = 1.0;
+   50 : //B(0,2) = 1.0;
+   51 : //B(1,0) = 1.0;
+   52 : //B(1,0) = 1.0;
+   53 : B = [ [ 3.0, 1.0, 1.0 ], [ 1.0, 1.0, 3.0 ], [ 3.0, 3.0, 3.0 ] ];
+   54 : cout << "\n";
+   55 : cout << "  Matrix B = " << B << endl;
+   56 : //
+   57 : //  Compute A*B.
+   58 : //  This operation requires the "load lapack" statement above.
+   59 : //
+   60 : real[int,int] AxB(3,3);
+   61 : AxB = A * B;
+   62 : cout << "\n";
+   63 : cout << "  Matrix AxB = product A*B = " << AxB << endl;
+   64 : //
+   65 : //  Compute A transpose.
+   66 : //
+   67 : real[int,int] AT(3,3);
+   68 : AT = A';
+   69 : cout << "\n";
+   70 : cout << "  Matrix AT = A' = transpose A'  " << AT << endl;
+   71 : //
+   72 : //  Define a matrix C.
+   73 : 
+   74 : //
+   75 : //  C = 1 1 0 1
+   76 : //      1 1 1 1
+   77 : //      1 0 1 1
+   78 : //
+   79 : real[int,int] C(3,4);
+   80 : C = 1.0;
+   81 : C(2,1) = 0.0;
+   82 : C(0,2) = 0.0;
+   83 : cout << "\n";
+   84 : cout << "  Matrix C = " << C << endl;
+   85 : cout << "  First row of C = C(0,:) = " << C(0,:) << endl;
+   86 : //
+   87 : //  Define a vector d, and copy row 0 of C into it.
+   88 : //
+   89 : real[int] d(4);
+   90 : d = C(0,:);
+   91 : cout << "\n";
+   92 : cout << "  d = C(0,:)\n";
+   93 : cout << "  Size of d = d.n = " << d.n << "\n";
+   94 : cout << "  Entries of d = " << d << "\n";
+   95 : //
+   96 : //  Define vectors e and f, and create a matrix G as their outer product.
+   97 : //
+   98 : real[int] e(3);
+   99 : e=[1,2,3];
+  100 : real[int] f(4);
+  101 : f=[4,5,6,7];
+  102 : real[int,int] G(3,4);
+  103 : G = e * f';
+  104 : cout << "\n";
+  105 : cout << "  Vector e = " << e << "\n";
+  106 : cout << "  Vector f = " << f << "\n";
+  107 : cout << "  Matrix G = e * f' = " << G << "\n";
+  108 : //
+  109 : //  Define vectors h and i, and use them to pre- and post-multiply
+  110 : //  the 3x4 matrix C.
+  111 : //
+  112 : real[int] h(3);
+  113 : h = [ 1.0, 1.0, 1.0 ];
+  114 : real[int] i(4);
+  115 : i = [ 1.0, 1.0, 1.0, 1.0 ];
+  116 : real[int] j(4);
+  117 : j = h' * C;
+  118 : real[int] k(3);
+  119 : k = C * i;
+  120 : cout << "\n";
+  121 : cout << "  Premultiply j = h' * C = " << j << "\n";
+  122 : cout << "  Postmultiply k = C * i = " << k << "\n";
+  123 : //
+  124 : //  (Rectangular) Matrix multiplication.
+  125 : //
+  126 : real[int,int] L(3,4);
+  127 : L = A * G;
+  128 : cout << "\n";
+  129 : cout << "  L = A * G = " << L << endl;
+  130 : //
+  131 : //  Matrix addition.
+  132 : //
+  133 : real[int,int] M(3,3);
+  134 : M = A + B;
+  135 : cout << "\n";
+  136 : cout << "  M = A + B = " << M << endl;
+  137 : //
+  138 : //  Scalar multiplication.
+  139 : //
+  140 : M = 2 * M;
+  141 : cout << "  M = 2 * M = " << M << endl;
+  142 : //
+  143 : //  Scalar addition.
+  144 : //
+  145 : //M = M .+ 10;
+  146 : //cout << "  M = M + 10 = " << M << endl;
+  147 : //
+  148 : //  Elementwise multiplication.
+  149 : //
+  150 : M = A .* B;
+  151 : cout << "  M = A .* B = " << M << endl;
+  152 : //
+  153 : //  Elementwise division
+  154 : //
+  155 : M = A ./ B;
+  156 : cout << "  M = A ./ B = " << M << endl;
+  157 : //
+  158 : //  Inverse.
+  159 : //
+  160 : M = A ^ -1;
+  161 : cout << "  M = A ^ -1 = " << M << endl;
+  162 : //
+  163 : //  Dimensions.
+  164 : //
+  165 : cout << "  Dimensions of A = (A.m,A.n) = " << A.m << "," << A.n << "\n";
+  166 : //
+  167 : //  Solution operator is multiplication by inverse:
+  168 : //
+  169 : real[int] x1(3);
+  170 : real[int] x2(3);
+  171 : real[int] y2(3);
+  172 : real[int,int] Ainv(3,3);
+  173 : x1 = [ 1, 2, 3];
+  174 : cout << "\n";
+  175 : cout << "  Solution X1 = " << x1 << "\n";
+  176 : y2 = A * x1;
+  177 : cout << "  Y2 = A * X1 = " << y2 << "\n";
+  178 : //x2 = ( A ^ -1 ) * y2;
+  179 : Ainv = ( A ^ - 1 );
+  180 : x2 = Ainv * y2;
+  181 : cout << "  X2 = A^-1 * Y2 = " << x2 << "\n";
+  182 : //
+  183 : //  Maximum, doesn't work!
+  184 : //
+  185 : //cout << "  max ( M ) = " << max ( M ) << "\n";
+  186 : //
+  187 : //  Norms?  Doesn't work.
+  188 : //
+  189 : //cout << || M ||_1 << "\n";
+  190 : //
+  191 : //  Terminate.
+  192 : //
+  193 : cout << "\n";
+  194 : cout << "ARRAY2D:\n";
+  195 : cout << "  Normal end of execution.\n";
+  196 : 
+  197 : exit ( 0 );
+  198 : 
+  199 :  sizestack + 1024 =2112  ( 1088 )
+
+
+ARRAY2D:
+  Demonstrate how 2D matrices can be defined and manipulated.
+
+  Matrix A = 3 3	
+	   0   1   0
+	   0   0   1
+	   1   1   1
+	
+
+  Matrix B = 3 3	
+	   3   1   1
+	   1   1   3
+	   3   3   3
+	
+
+  Matrix AxB = product A*B = 3 3	
+	   1   1   3
+	   3   3   3
+	   7   5   7
+	
+
+  Matrix AT = A' = transpose A'  3 3	
+	   0   0   1
+	   1   0   1
+	   0   1   1
+	
+
+  Matrix C = 3 4	
+	   1   1   0   1
+	   1   1   1   1
+	   1   0   1   1
+	
+  First row of C = C(0,:) = 4	
+	  1	  1	  0	  1	
+
+  d = C(0,:)
+  Size of d = d.n = 4
+  Entries of d = 4	
+	  1	  1	  0	  1	
+
+  Vector e = 3	
+	  1	  2	  3	
+  Vector f = 4	
+	  4	  5	  6	  7	
+  Matrix G = e * f' = 3 4	
+	   4   5   6   7
+	   8  10  12  14
+	  12  15  18  21
+	
+
+  Premultiply j = h' * C = 4	
+	  3	  3	  3	  3	
+  Postmultiply k = C * i = 3	
+	  3	  4	  3	
+
+  L = A * G = 3 4	
+	   8  10  12  14
+	  12  15  18  21
+	  24  30  36  42
+	
+
+  M = A + B = 3 3	
+	   3   2   1
+	   1   1   4
+	   4   4   4
+	
+  M = 2 * M = 3 3	
+	   6   4   2
+	   2   2   8
+	   8   8   8
+	
+  M = A .* B = 3 3	
+	   0   1   0
+	   0   0   3
+	   3   3   3
+	
+  M = A ./ B = 3 3	
+	   0   1   0
+	   0   0 0.3333333333
+	 0.3333333333 0.3333333333 0.3333333333
+	
+  M = A ^ -1 = 3 3	
+	  -1  -1   1
+	   1   0   0
+	   0   1   0
+	
+  Dimensions of A = (A.m,A.n) = 3,3
+
+  Solution X1 = 3	
+	  1	  2	  3	
+  Y2 = A * X1 = 3	
+	  2	  3	  6	
+  X2 = A^-1 * Y2 = 3	
+	  1	  2	  3	
+
+ARRAY2D:
+  Normal end of execution.
+  current line = 197
+exit(0)
+ err code 0 ,  mpirank 0
+ CodeAlloc : nb ptr  3926,  size :485208 mpirank: 0
+Ok: Normal End
